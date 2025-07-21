@@ -16,14 +16,17 @@ public class Message {
     private Long id;
     private String content;
 
-    private String owner;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
-    private String sendTo;
+    @ManyToOne
+    @JoinColumn(name = "sendTo_id")
+    private User sendTo;
 
     public Message(String content, String owner, String sendTo){
         this.content = content;
-        this.owner = owner;
-        this.sendTo = sendTo;
+
     }
 
 }

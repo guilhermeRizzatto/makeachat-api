@@ -15,14 +15,14 @@ public class ChatController {
     public void processPrivateMessage(Message message, Principal principal) {
         System.out.println(principal.getName());
         messagingTemplate.convertAndSendToUser(
-                message.getSendTo(),
+                message.getSendTo().getName(),
                 "/queue/messages",
-                new Message(message.getContent(), message.getOwner(), message.getSendTo())
+                new Message(/*message.getContent(), message.getOwner(), message.getSendTo()*/)
         );
         messagingTemplate.convertAndSendToUser(
                 principal.getName(),
                 "/queue/messages",
-                new Message(message.getContent(), message.getOwner(), message.getSendTo())
+                new Message(/*message.getContent(), message.getOwner(), message.getSendTo()*/)
         );
     }
 
