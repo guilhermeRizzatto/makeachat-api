@@ -8,6 +8,9 @@ import com.rizzatto.chat_preview.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,35 +19,39 @@ import java.time.ZonedDateTime;
 public class JwtService {
 
     @Value("${secret.key.private}")
-    private String privateKey;
+    private String privateKeyPath;
 
     @Value("${secret.key.public}")
-    private String publicKey;
+    private String publicKeyPath;
 
     public String generateToken(User user) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(privateKey);
+            Algorithm algorithm = Algorithm.HMAC256(loadPrivateKey(privateKeyPath));
             return JWT.create()
-                    .withIssuer("rizzatto-api")
+                    .withIssuer("makeachat-api")
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
                     .withSubject(user.getUsername())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
-            throw new JWTCreationException("Erro ao gerar Token.", exception);
+            throw new JWTCreationException("Error generating the Token: ", exception);
+        } catch (IOException e){
+            throw new RuntimeException("Error reading the key: " + e.getMessage());
         }
     }
 
     public String getSubjectFromToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(privateKey);
+            Algorithm algorithm = Algorithm.HMAC256(loadPrivateKey(privateKeyPath));
             return JWT.require(algorithm)
-                    .withIssuer("rizzatto-api")
+                    .withIssuer("makeachat-api")
                     .build()
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("Token inválido ou expirado.");
+            throw new JWTVerificationException("Invalid Token.");
+        } catch (IOException e){
+            throw new RuntimeException("Error reading the key: " + e.getMessage());
         }
     }
 
@@ -54,6 +61,10 @@ public class JwtService {
 
     private Instant expirationDate() {
         return ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(4).toInstant();
+    }
+
+    private String loadPrivateKey(String keyPath) throws IOException {
+        return Files.readString(Paths.get(keyPath));
     }
 
 }

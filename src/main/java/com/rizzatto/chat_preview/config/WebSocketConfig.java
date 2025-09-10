@@ -13,13 +13,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/queue"); // /queue para mensagens privadas
-        config.setApplicationDestinationPrefixes("/chat-preview");
+        config.setApplicationDestinationPrefixes("/makeachat");
         config.setUserDestinationPrefix("/user"); // importante para @SendToUser
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/api/ws")
+        registry.addEndpoint("/api/chat")
                 .setHandshakeHandler(new CustomHandshakeHandler())
                 .addInterceptors(new UserHandshakeInterceptor())
                 .setAllowedOriginPatterns("*")

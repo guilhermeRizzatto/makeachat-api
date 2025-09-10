@@ -5,6 +5,7 @@ import com.rizzatto.chat_preview.model.repository.UserRepository;
 import com.rizzatto.chat_preview.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,15 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String recoverToken(HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
-        return authHeader.replace("Bearer", "");
+    public static String recoverToken(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 }

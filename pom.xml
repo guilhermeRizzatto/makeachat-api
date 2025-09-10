@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.rizzatto</groupId>
 	<artifactId>chat-preview</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>chat-preview</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -62,11 +62,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.28</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.3</version>
 		</dependency>
 	</dependencies>
 

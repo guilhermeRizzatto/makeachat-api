@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource("file:/usr/env/chat-preview/application.properties")
+@PropertySource("file:/Users/guilherme/env/chat-preview/application.properties")
 public class ChatPreviewApplication {
 
 	public static void main(String[] args) {
