@@ -1,5 +1,6 @@
 package com.rizzatto.chat_preview.security.controller;
 
+import com.rizzatto.chat_preview.model.dto.DtoUser;
 import com.rizzatto.chat_preview.security.dto.DTOLogin;
 import com.rizzatto.chat_preview.security.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,8 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<String> validateToken(@CookieValue(name = "token", required = false) String token) {
-        String user = authService.validate(token);
+    public ResponseEntity<DtoUser> validateToken(@CookieValue(name = "token", required = false) String token) {
+        DtoUser user = authService.validate(token);
         return ResponseEntity.ok(user);
     }
 

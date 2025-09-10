@@ -1,4 +1,6 @@
-package com.rizzatto.chat_preview.model;
+package com.rizzatto.chat_preview.model.dto;
+
+import com.rizzatto.chat_preview.model.Message;
 
 public record DadosMessage(
         String content,
