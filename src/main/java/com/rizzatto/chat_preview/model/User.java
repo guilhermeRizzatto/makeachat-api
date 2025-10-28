@@ -22,6 +22,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private String email;
     private String password;
 
     @OneToMany(mappedBy = "owner")
@@ -62,8 +63,9 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
-    public User(String name, String password){
+    public User(String name, String email, String password){
         this.name = name;
+        this.email = email;
         this.password = password;
     }
 }

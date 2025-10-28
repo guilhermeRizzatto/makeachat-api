@@ -16,8 +16,12 @@ import java.util.Map;
 @Component
 public class UserHandshakeInterceptor implements HandshakeInterceptor {
 
-    @Autowired
     JwtService jwtService;
+
+    @Autowired
+    public UserHandshakeInterceptor(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
 
     @Override
     public boolean beforeHandshake(
@@ -28,9 +32,9 @@ public class UserHandshakeInterceptor implements HandshakeInterceptor {
             HttpServletRequest httpRequest = servletRequest.getServletRequest();
 
             String token = SecurityFilter.recoverToken(httpRequest);
-            String username = jwtService.getSubjectFromToken(token);
-            if (username != null) {
-                attributes.put("username", username);
+            String email = jwtService.getSubjectFromToken(token);
+            if (email != null) {
+                attributes.put("email", email);
                 return true;
             }
         }

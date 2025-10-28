@@ -32,7 +32,7 @@ public class JwtService {
                     .withIssuer("makeachat-api")
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
-                    .withSubject(user.getUsername())
+                    .withSubject(user.getEmail())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new JWTCreationException("Error generating the Token: ", exception);

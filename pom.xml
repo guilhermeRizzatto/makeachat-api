@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.rizzatto</groupId>
 	<artifactId>chat-preview</artifactId>
-	<version>1.1.1</version>
+	<version>1.2.0</version>
 	<name>chat-preview</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -42,6 +42,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

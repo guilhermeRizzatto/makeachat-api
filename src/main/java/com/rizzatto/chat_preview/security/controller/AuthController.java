@@ -26,10 +26,10 @@ public class AuthController {
                 .value(token)
                 .httpOnly(true)
                 .domain("")
-                .secure(true)
+                .secure(false)
                 .path("/")
-                .sameSite("None")
-                .maxAge(300L)
+                .sameSite("Lax")
+                .maxAge(900L)
                 .build();
 
         return ResponseEntity.ok()

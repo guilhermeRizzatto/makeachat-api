@@ -30,7 +30,7 @@ public class AuthService {
     AuthenticationManager authenticationManager;
 
     public String login(DTOLogin dtoLogin){
-        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(dtoLogin.username(), dtoLogin.password());
+        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(dtoLogin.email(), dtoLogin.password());
         Authentication auth = authenticationManager.authenticate(usernamePassword);
 
         return jwtService.generateToken((User) auth.getPrincipal());
@@ -38,10 +38,10 @@ public class AuthService {
 
     public DtoUser validate(String token){
         if(token == null || token.isEmpty()) throw new TokenException("Missing Token.");
-        String username = jwtService.getSubjectFromToken(token);
+        String email = jwtService.getSubjectFromToken(token);
         try {
-            System.out.println(username);
-            User user = userRepository.findByName(username).orElseThrow();
+            System.out.println(email);
+            User user = userRepository.findByEmail(email).orElseThrow();
             String cryptId = filter.encryptId(user.getId());
             return new DtoUser(user, cryptId);
         } catch (Exception e){
@@ -50,10 +50,10 @@ public class AuthService {
     }
 
     public void register(DTOLogin dtoLogin){
-        if(userRepository.findByName(dtoLogin.username()).isPresent()) throw new BusinessException("This username is not available. Try a different one.");
+        if(userRepository.findByEmail(dtoLogin.email()).isPresent()) throw new BusinessException("This email is not available. Try a different one.");
 
         String passwordEncrypted = new BCryptPasswordEncoder().encode(dtoLogin.password());
-        User user = new User(dtoLogin.username(), passwordEncrypted);
+        User user = new User(dtoLogin.username(), dtoLogin.email(), passwordEncrypted);
 
         userRepository.save(user);
     }
