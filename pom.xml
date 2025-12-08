@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.rizzatto</groupId>
-	<artifactId>chat-preview</artifactId>
+	<artifactId>makeachat</artifactId>
 	<version>1.2.0</version>
-	<name>chat-preview</name>
-	<description>Demo project for Spring Boot</description>
+	<name>makeachat</name>
+	<description>Make a chat</description>
 	<url/>
 	<licenses>
 		<license/>
