@@ -34,6 +34,13 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            String errorMessage = exception.getMessage();
+                            System.out.println("Login Google error: " + errorMessage);
+                            response.sendRedirect(
+                                    "http://localhost:4200/login?error=google_auth_failed"
+                            );
+                        })
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

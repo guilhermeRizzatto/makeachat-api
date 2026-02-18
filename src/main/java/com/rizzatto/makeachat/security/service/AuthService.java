@@ -6,17 +6,19 @@ import com.rizzatto.makeachat.model.User;
 import com.rizzatto.makeachat.model.dto.DtoUser;
 import com.rizzatto.makeachat.model.repository.UserRepository;
 import com.rizzatto.makeachat.security.SecurityFilter;
-import com.rizzatto.makeachat.security.dto.DTOUserCreation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -33,7 +35,7 @@ public class AuthService {
     @Autowired
     AuthenticationManager authenticationManager;
 
-    private final Path imagesPaths = Paths.get("/Users/guilherme/makeachat/files/uploaded-images");
+    private final Path imagesPaths = Paths.get("/Users/guilhermerizzatto/makeachat/files/uploaded-images");
 
     public DtoUser validate(String token){
         if(token == null || token.isEmpty()) throw new TokenException("Missing Token.");
@@ -48,42 +50,56 @@ public class AuthService {
     }
 
 
-    public void finishAccountCreation(DTOUserCreation dtoUserCreation){
-        User user = userRepository.findByEmail(dtoUserCreation.email()).orElseThrow(() -> new BusinessException("User not found"));
+    public void finishAccountCreation(String token, String name, String username, MultipartFile picture){
+        if(token == null || token.isEmpty()) throw new TokenException("Missing Token.");
+        String email = jwtService.getSubjectFromToken(token);
 
-        user.setName(dtoUserCreation.name());
-        user.setUsername(dtoUserCreation.username());
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BusinessException("User not found"));
+
+        user.setName(name);
+        user.setUsername(username);
 
         try {
 
-            MultipartFile file = dtoUserCreation.picture();
+            if(picture != null){
+                String originalFilename = StringUtils.cleanPath(picture.getOriginalFilename());
 
-            if(file != null){
-                // Ensure the upload directory exists
-                if (!Files.exists(imagesPaths)) {
-                    Files.createDirectories(imagesPaths);
+                if (originalFilename.contains("..")) {
+                    throw new SecurityException("Invalid file path.");
                 }
 
-                // Save the file to the file system
-                Path destinationFile = this.imagesPaths.resolve(
-                                Paths.get(Objects.requireNonNull(file.getOriginalFilename())))
-                        .normalize();
-
-                // Check if the file is within the intended directory to prevent directory traversal attacks
-                if (!destinationFile.getParent().equals(this.imagesPaths.normalize())) {
-                    throw new SecurityException("Cannot store file outside current directory.");
+                if (!picture.getContentType().startsWith("image/")) {
+                    throw new IllegalArgumentException("Only images are allowed.");
                 }
 
-                try (var inputStream = file.getInputStream()) {
-                    Files.copy(inputStream, destinationFile);
+                String extensionFile = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String safeUsername = username.replaceAll("[^a-zA-Z0-9]", "");
+                String newFileName = safeUsername + "_" + UUID.randomUUID() + extensionFile;
+
+                Path uploadPath = imagesPaths.toAbsolutePath().normalize();
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
                 }
+
+                Path destinationFile = uploadPath
+                        .resolve(newFileName)
+                        .normalize()
+                        .toAbsolutePath();
+
+                if (!destinationFile.startsWith(uploadPath)) {
+                    throw new SecurityException("Cannot store file outside target directory.");
+                }
+
+                user.setPathPicture(String.valueOf(destinationFile));
+                Files.copy(picture.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
             }
 
             userRepository.save(user);
         }
         catch (IOException e) {
             e.printStackTrace();
-            throw  new RuntimeException("Failed to upload image: " + e.getMessage());
+            throw  new RuntimeException("Error_upload_profile_image");
         }
 
 
