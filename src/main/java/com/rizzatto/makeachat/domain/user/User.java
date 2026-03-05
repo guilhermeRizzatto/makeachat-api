@@ -1,5 +1,6 @@
 package com.rizzatto.makeachat.domain.user;
 
+import com.rizzatto.makeachat.domain.base.BaseEntity;
 import com.rizzatto.makeachat.domain.contact.Contact;
 import com.rizzatto.makeachat.domain.chat.Message;
 import jakarta.persistence.*;
@@ -17,10 +18,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EqualsAndHashCode(exclude = {"messages", "addedContacts"})
+@EqualsAndHashCode(exclude = {"messages", "addedContacts"}, callSuper = true)
 @ToString(exclude = {"messages", "addedContacts"})
 @Table(name = "chat_user")
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,13 +71,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
-    }
-
-    public User(String name, String username, String email, String pathPicture){
-        this.name = name;
-        this.username = username;
-        this.email = email;
-        this.pathPicture = pathPicture;
     }
 }
 

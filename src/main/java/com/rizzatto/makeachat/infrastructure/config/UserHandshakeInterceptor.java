@@ -1,6 +1,7 @@
 package com.rizzatto.makeachat.infrastructure.config;
 
 import com.rizzatto.makeachat.infrastructure.security.filter.SecurityFilter;
+import com.rizzatto.makeachat.infrastructure.security.service.CookieService;
 import com.rizzatto.makeachat.infrastructure.security.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,11 @@ import java.util.Map;
 @Component
 public class UserHandshakeInterceptor implements HandshakeInterceptor {
 
+    @Autowired
     JwtService jwtService;
 
     @Autowired
-    public UserHandshakeInterceptor(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
+    CookieService cookieService;
 
     @Override
     public boolean beforeHandshake(
@@ -31,10 +31,10 @@ public class UserHandshakeInterceptor implements HandshakeInterceptor {
         if (request instanceof ServletServerHttpRequest servletRequest) {
             HttpServletRequest httpRequest = servletRequest.getServletRequest();
 
-            String token = SecurityFilter.recoverToken(httpRequest);
-            String email = jwtService.getSubjectFromToken(token);
-            if (email != null) {
-                attributes.put("email", email);
+            String token = cookieService.recoverCookieToken(httpRequest);
+            String userPublicId = jwtService.getSubjectFromToken(token);
+            if (userPublicId != null) {
+                attributes.put("userPublicId", userPublicId);
                 return true;
             }
         }

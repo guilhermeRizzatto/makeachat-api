@@ -33,7 +33,7 @@ public class JwtService {
                     .withIssuer("makeachat-api")
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
-                    .withSubject(user.getEmail())
+                    .withSubject(user.getPublicId().toString())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new JWTCreationException("Error generating the Token: ", exception);
@@ -62,7 +62,7 @@ public class JwtService {
     }
 
     private Instant expirationDate() {
-        return Instant.now().plus(30, ChronoUnit.MINUTES);
+        return Instant.now().plus(7, ChronoUnit.DAYS);
     }
 
     private String loadPrivateKey(String keyPath) throws IOException {

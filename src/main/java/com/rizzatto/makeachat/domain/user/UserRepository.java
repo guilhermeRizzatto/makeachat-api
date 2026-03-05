@@ -5,18 +5,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByName(String name);
-    Optional<User> findByEmail(String email);
-
-    Optional<User> findByUsername(String username);
-
-    @Query("SELECT u FROM User u WHERE u.username = :identifier OR u.email = :identifier")
-    Optional<User> findByIdentifier(String identifier);
-
+    Optional<User> findByPublicId(UUID publicId);
     boolean existsByUsername(String username);
-
+    Optional<User> findByEmail(String email);
 }

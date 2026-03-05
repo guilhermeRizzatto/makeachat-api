@@ -13,7 +13,7 @@ public class CustomHandshakeHandler extends DefaultHandshakeHandler {
     protected Principal determineUser(
             ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
 
-        String email = (String) attributes.get("email");
-        return () -> email; // retorna um Principal anônimo
+        String userPublicId = (String) attributes.get("userPublicId");
+        return () -> userPublicId;
     }
 }

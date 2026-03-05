@@ -16,9 +16,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/queue"); // /queue para mensagens privadas
+        config.enableSimpleBroker("/queue"); // /queue for private messages
         config.setApplicationDestinationPrefixes("/makeachat");
-        config.setUserDestinationPrefix("/user"); // importante para @SendToUser
+        config.setUserDestinationPrefix("/user"); // important for @SendToUser
     }
 
     @Override

@@ -12,15 +12,10 @@ public record UseDTO(
         ) {
 
         public UseDTO(User user){
-                this(user.getId().toString(), user.getUsername(), List.of());
+                this(user.getPublicId().toString(), user.getUsername(), List.of());
         }
 
-        public UseDTO(User user, List<MessageDTO> messages, String cryptId){
-                this(cryptId, user.getUsername(), messages);
+        public UseDTO(User user, List<MessageDTO> messages){
+                this(user.getPublicId().toString(), user.getUsername(), messages);
         }
-
-        public UseDTO(User user, String cryptId){
-                this(cryptId, user.getUsername(), List.of());
-        }
-
 }
